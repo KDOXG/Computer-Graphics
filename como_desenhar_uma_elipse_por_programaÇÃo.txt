@@ -26,7 +26,7 @@ PASSOS:
 	A2(x_center,y_center + x)
 	B1(x_center,y_center - y)
 	B2(x_center,y_center + y)
-    P
+	P
 	
 	count = start_angle;
 	flag = 0;
