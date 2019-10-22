@@ -1,0 +1,75 @@
+PARÂMETROS:
+*	Posição da elipse (center(x,y))
+*	Raio horizontal (x_radius)
+*	Raio vertical (y_radius)
+*	Ângulo de impressão (start_angle, end_angle)
+
+PASSOS:
+1.	Calcular distância do foco ao centro
+    large = x_radius > y_radius ? x_radius : y_radius;
+    small = x_radius > y_radius ? y_radius : x_radius;
+	c = raiz(large**2 - small**2);
+
+2.	Calcular posição dos dois focos usando c
+	SE x_radius > y_radius
+		F1(x_center - c,y_center);
+		F2(x_center + c,y_center);
+	SENÃO SE x_radius < y_radius
+		F1(x_center,y_center - c);
+		F2(x_center,y_center + c);
+	SENÃO
+		F1(center);
+		F2(center);
+
+3.	Calcular posição do ponto P pertencente à elipse dentro do ângulo de impressão
+	A1(x_center,y_center - x)
+	A2(x_center,y_center + x)
+	B1(x_center,y_center - y)
+	B2(x_center,y_center + y)
+    P
+	
+	count = start_angle;
+	flag = 0;
+	this_angle = 90 < end_angle ? 90 : end_angle;
+	while (count < end_angle)
+		while (count < this_angle)
+            for (i = 0; i < 3; i++)
+                for (j = 0; j < 3; j++)
+                    if ( ellipse(A1,A2,B1,B2,F1,F2,ref(P),i,j,this_angle/90) ) == 2*a)
+                        setPixel(P);
+                        flag = 1;
+                        break;
+                if (flag == 1)
+                    break;
+            count = count + 1;
+
+        switch (this_angle)
+            case 90:
+                this_angle = 180 < end_angle ? 180 : end_angle;
+                break;
+            case 180:
+                this_angle = 270 < end_angle ? 270 : end_angle;
+                break;
+            case 270:
+                this_angle = end_angle;
+                break;
+            default:
+                this_angle = end_angle;
+                break;
+
+    function elipse(A1, A2, B1, B2, F1, F2, ref(P), i, j, angle)
+        switch (angle)
+            case 0:
+                P(x_B1 + i, y_B1 + j);
+                return d(F1, P) + d(F2, P);
+            case 1:
+                P(x_A2 - i, y_A2 + j);
+                return d(F1, P) + d(F2, P);
+            case 2:
+                P(x_B2 - i, y_B2 - j);
+                return d(F1, P) + d(F2, P);
+            case 3:
+                P(x_A1 + i, y_A1 - j);
+                return d(F1, P) + d(F2, P);
+            default:
+                return 0;
